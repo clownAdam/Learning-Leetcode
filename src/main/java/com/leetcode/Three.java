@@ -1,7 +1,5 @@
 package com.leetcode;
 
-import sun.rmi.server.InactiveGroupException;
-
 import java.util.HashMap;
 
 /**
@@ -18,24 +16,51 @@ import java.util.HashMap;
 public class Three {
     public static void main(String[] args) {
         Three demo = new Three();
-        int len = demo.lengthOfLongestSubstring("hello");
-        System.out.println("len = " + len);
+        int len = demo.lengthOfLongestSubstring("wwkew");//wwkew
+        System.out.println("len = " + len);//3
     }
-    public int lengthOfLongestSubstring(String s) {
-        String str = s;
-        StringBuffer sb = new StringBuffer();
-        HashMap<String, Integer> map = new HashMap<>();
-        String[] split = s.split("");
-        for (int i = 0; i < split.length; i++) {
-            String ch = split[i];
-            boolean flag = map.containsKey(ch);
-            if(!flag){
-                map.put(ch,1);
-                sb.append(ch);
-            }else{
 
+    /**
+     * 滑动窗口的右边界不断的右移，只要没有重复的字符，就持续向右扩大窗口边界。
+     * 一旦出现了重复字符，就需要缩小左边界，直到重复的字符移出了左边界，然后继续移动滑动窗口的右边界。
+     * 以此类推，每次移动需要计算当前长度，并判断是否需要更新最大长度，最终最大的值就是题目中的所求。
+     *
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring(String s) {
+        String[] ch = s.split("");
+        int left = 0;
+        String left_value = ch[left];
+        int right = 0;
+        String right_value = ch[right];
+        int index = 0;
+        int len = 0;
+        int cur_len = 0;
+        String cur_str = "";
+        HashMap<String, Integer> map = new HashMap<>(s.length());
+        while (left < ch.length && index < ch.length) {
+            String current = ch[index];
+            System.out.println("current = " + current);
+            System.out.println(left + "--" + "left--" + left_value);
+            right_value = current;
+            if (map.containsKey(current)) {
+                if (left < index) {
+                    left++;
+                    left_value = ch[left];
+                } else {
+                    index++;
+                    right++;
+                }
+            } else {
+                map.put(current, 1);
+                cur_len = s.indexOf(right_value) - s.indexOf(left_value) + 1;
+                System.out.println(s.indexOf(right_value) + "-->" + s.indexOf(left_value));
+                len = cur_len > len ? cur_len : len;
+                index++;
+                right++;
             }
         }
-        return sb.length();
+        return len;
     }
 }
